@@ -47,6 +47,7 @@ def main() -> None:
 
     # Security handlers
     application.add_handler(CommandHandler("scan", security.scan_handler))
+    application.add_handler(CommandHandler("detect", security.detect_handler))
     application.add_handler(CommandHandler("alerts", security.alerts_handler))
 
     # Deploy flow uses a conversation handler for confirmation

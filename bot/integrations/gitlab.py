@@ -127,3 +127,25 @@ class GitLabClient:
     async def search_projects(self, query: str, per_page: int = 20) -> List[Dict[str, Any]]:
         params = {"search": query, "per_page": per_page}
         return await self._request("GET", "projects", params=params)
+
+    async def download_repository_archive(self, project: Union[int, str], ref: Optional[str] = None) -> bytes:
+        """Download a repository archive (tar) for the given project and optional ref.
+
+        Returns raw bytes of the archive.
+        """
+        project_id = await self.resolve_project_id(project)
+        path = f"projects/{project_id}/repository/archive"
+        params = {}
+        if ref:
+            params["sha"] = ref
+        # Directly perform request to get binary content
+        if self.session is None:
+            raise RuntimeError("GitLabClient session has not been initialized")
+        url = f"{self.base_url}/{path.lstrip('/')}"
+        async with self.session.get(url, params=params) as response:
+            data = await response.read()
+            if response.status >= 400:
+                text = data.decode(errors="ignore")
+                logger.error("GitLab API error %s %s: %s", response.status, url, text)
+                raise GitLabAPIError(f"GitLab API request failed ({response.status}): {text}")
+            return data
