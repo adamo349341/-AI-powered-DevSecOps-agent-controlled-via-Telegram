@@ -17,3 +17,9 @@ images/
 .vscode/
 Dockerfile
 docker-compose.override.yml
+# Generated scan/report files
+bandit.json
+bandit_raw.json
+trivy.json
+trivy.err
+bot/notifications/poller.py
