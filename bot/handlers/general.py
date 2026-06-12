@@ -23,3 +23,12 @@ async def help_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         "/deploy [env] [version] - Deploy a release with confirmation\n"
         "/alerts - Show recent security alerts\n"
     )
+
+
+async def myid_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Return the numeric chat id for the user or group. Useful for populating BOT_ADMIN_IDS."""
+    chat = update.effective_chat
+    if chat:
+        await update.message.reply_text(f"Your chat id is: {chat.id}")
+    else:
+        await update.message.reply_text("Could not determine chat id.")
